@@ -18,7 +18,6 @@ import multiprocessing
 import math
 import random
 import _thread as thread
-import serial 
 
 '''
 This is a Websocket server that forwards signals from the detector to any client connected.
