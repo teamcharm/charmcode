@@ -61,11 +61,40 @@ def one_home():
         event_number, Ardn_time_ms, adc, sipm, deadtime, temperature = getdata(thedata)
         st.table([("Event number", event_number[0]), ("Ardn_time_ms", Ardn_time_ms[0]), ("adc", adc[0]), ("sipm", sipm[0]), ("deadtime", deadtime[0]), ("temperature", temperature[0])])
     
-    # line graph showing SiPM reading spikes (voltage) against time elapsed 
+    data = {
+        "event number": event_number,
+        "ardn time": Ardn_time_ms,
+        "adc": adc,
+        "sipm": sipm,
+        "deadtime": deadtime,
+        "temp": temperature
+    }
+
+    rate = []
+
+    for i in range len((data["ardn time"])):
+
+    df = pd.DataFrame(data)
+    fig = px.line(df, x="ardn time", y="sipm", title='SiPM voltage over time', width = 400, height = 600)
+    fig.update_layout(
+        xaxis=dict(range=[15000000, 20000000])  # sets visible x-axis range
+    )
+
+    st.plotly_chart(fig, use_container_width=True) 
 
     # histogram of events per 5 minutes 
+    df = pd.DataFrame(data)
+    fig = px.histogram(df, x="ardn time", y = "event number", nbins = 12, width = 400, height = 600)
+    st.plotly_chart(fig, use_container_width = True)
 
     # Rate vs calculated SiPM peak voltage line graph 
+    df = pd.DataFrame(data)
+    fig = px.line(df, x="ardn time", y="sipm", title='Rate vs SiPM voltage over time', width = 400, height = 600)
+    fig.update_layout(
+        xaxis=dict(range=[15000000, 20000000])  # sets visible x-axis range
+    )
+
+    st.plotly_chart(fig, use_container_width=True) 
 
 
 #code for data analysis page when using two detectors 
