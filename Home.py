@@ -27,12 +27,12 @@ st.title("Team Charm Muon Detector")
 st.subheader("1-2 sentences about the project") 
 with st.popover(label="Help", icon=":material/help:"):
     st.markdown("this will explain how to use the app")
-datatype = st.radio(label="Choose detection data type: ", options=["1 detector", "Coincidence with 2 detectors", "Coincidence with 3 detectors"])
+datatype = st.radio(label="Choose detection data type: ", options=["1 detector", "2 detectors", "3 detectors"])
 
 import homepages
 if datatype == "1 detector":
     homepages.one_home()
-elif datatype == "Coincidence with 2 detectors": 
+elif datatype == "2 detectors": 
     homepages.two_home()
 else: 
     homepages.three_home()
