@@ -70,9 +70,39 @@ def one_home():
         "temp": temperature
     }
 
-    rate = []
+    data2 = {
 
-    for i in range len((data["ardn time"])):
+    }
+
+    rate = []
+    peakV = []
+
+    time = data["ardn time"]
+    curr = time[0]
+    q = 0
+    p = 0
+    for i in range(len(time) - 1):
+        if(sipm[i] > p):
+            p = sipm[i]
+
+        if(time[i + 1] - curr > 10):
+            r = (event_number[i+1] - event_number[q])/(time[i+1] - curr)
+            rate.append(r)
+            q = i
+            curr = time[i+1]
+            peakV.append(p)
+            p = 0
+
+        # else:
+        #     q = i
+
+    # for i in range(len(sipm) - 1):
+    #     if(sipm[i] > p):
+    #         p = sipm[i]
+        
+            
+    data2["rate"] = rate
+    data2["peak"] = peakV
 
     df = pd.DataFrame(data)
     fig = px.line(df, x="ardn time", y="sipm", title='SiPM voltage over time', width = 400, height = 600)
@@ -88,10 +118,10 @@ def one_home():
     st.plotly_chart(fig, use_container_width = True)
 
     # Rate vs calculated SiPM peak voltage line graph 
-    df = pd.DataFrame(data)
-    fig = px.line(df, x="ardn time", y="sipm", title='Rate vs SiPM voltage over time', width = 400, height = 600)
+    df = pd.DataFrame(data2)
+    fig = px.line(df, x="peak", y="rate", title='Rate vs SiPM voltage over time', width = 400, height = 600)
     fig.update_layout(
-        xaxis=dict(range=[15000000, 20000000])  # sets visible x-axis range
+        xaxis=dict(range=[0, 400])  # sets visible x-axis range
     )
 
     st.plotly_chart(fig, use_container_width=True) 
