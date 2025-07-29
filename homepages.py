@@ -85,7 +85,7 @@ def one_home():
         if(sipm[i] > p):
             p = sipm[i]
 
-        if(time[i + 1] - curr > 10):
+        if(time[i + 1] - curr > 5):
             r = (event_number[i+1] - event_number[q])/(time[i+1] - curr)
             rate.append(r)
             q = i
@@ -119,10 +119,10 @@ def one_home():
 
     # Rate vs calculated SiPM peak voltage line graph 
     df = pd.DataFrame(data2)
-    fig = px.line(df, x="peak", y="rate", title='Rate vs SiPM voltage over time', width = 400, height = 600)
-    fig.update_layout(
-        xaxis=dict(range=[0, 400])  # sets visible x-axis range
-    )
+    fig = px.histogram(df, x="peak", y="rate", title='Rate vs SiPM voltage over time', width = 400, height = 600)
+    # fig.update_layout(
+    #     xaxis=dict(range=[0, 400])  # sets visible x-axis range
+    # )
 
     st.plotly_chart(fig, use_container_width=True) 
 
