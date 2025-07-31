@@ -444,6 +444,60 @@ def two_home():
                                 height=500)
         st.plotly_chart(fig_trend, use_container_width=True)
 
+        # ---- Graph: Muon Count Rate per Second (10s Bins) ----
+        fig_muonrate = go.Figure()
+        trend_colors = ["#555555", "#AAAAAA"]
+
+        for i, (label, color, trend_color) in enumerate(zip([label0, label1], [color0, color1], trend_colors)):
+            time_sec = parsed_data[i]["ardn_time_min"] * 60  # convert minutes to seconds
+            rate_values = []
+            bin_times = []
+
+            bin_size = 10  # seconds
+            curr_time = time_sec[0]
+            start_index = 0
+
+            for j in range(1, len(time_sec)):
+                if time_sec[j] - curr_time >= bin_size:
+                    duration = time_sec[j] - curr_time
+                    rate = (j - start_index) / duration  # Hz
+                    rate_values.append(rate)
+                    bin_times.append(curr_time)
+                    curr_time = time_sec[j]
+                    start_index = j
+
+            # Add bar graph of actual data
+            fig_muonrate.add_trace(go.Bar(
+                x=bin_times,
+                y=rate_values,
+                name=label,
+                marker_color=color,
+                opacity=0.7
+            ))
+
+            # Add trendline
+            if len(bin_times) > 1:
+                coeffs = np.polyfit(bin_times, rate_values, deg=1)
+                poly = np.poly1d(coeffs)
+                trend_y = poly(bin_times)
+
+                fig_muonrate.add_trace(go.Scatter(
+                    x=bin_times,
+                    y=trend_y,
+                    mode="lines",
+                    name=f"{label} Trend",
+                    line=dict(color=trend_color, dash="dot")
+                ))
+
+        fig_muonrate.update_layout(title="Muon Count Rate per Second (10s Bins)",
+                                   xaxis_title="Time [seconds]",
+                                   yaxis_title="Muon Rate [Hz]",
+                                   barmode="overlay",
+                                   width=800,
+                                   height=500)
+        st.plotly_chart(fig_muonrate, use_container_width=True)
+
+
         if is_coincidence:
             st.markdown("**[TODO] Add coincidence-specific visualizations here.**")
 
